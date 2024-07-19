@@ -57,8 +57,10 @@ app.get('/neighborhoods/:city/:district/:letter', (req, res) => {
         return res.status(404).json({ error: 'District not found' });
     }
 
-    const neighborhoods = districtData.districts.filter(neighborhood => normalizeString(neighborhood.name).startsWith(letter));
-    res.json(neighborhoods.map(neighborhood => neighborhood.name));
+    const villages = districtData.districts.filter(neighborhood => normalizeString(neighborhood.name).startsWith(letter));
+    const neighborhoods = districtData.districts[0].neighborhoods.filter(neighborhood => normalizeString(neighborhood.name).startsWith(letter)); 
+    const allneighboor = villages.concat(neighborhoods);
+    res.json(allneighboor.map(neighborhood => neighborhood.name));
 });
 
 app.listen(port, () => {
