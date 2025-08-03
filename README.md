@@ -1,4 +1,4 @@
-# 🇹🇷 Turkey Cities API
+# 🇹🇷 Turkey Sehirler API
 
 Türkiye'deki şehir, ilçe ve mahalle bilgilerini harf bazlı filtreleme ile sunan basit bir API.
 
@@ -22,11 +22,12 @@ Proje klasöründe bu yapıda bir `data.json` dosyası olmalı:
     "counties": [
       {
         "name": "Beşiktaş",
-        "semt": [
+        "districts": [
           {
-            "name": "Köy Adı",
-            "mahalle": [
-              { "name": "Mahalle Adı" }
+            "name": "Arnavutköy",
+            "neighborhoods": [
+              { "name": "Arnavutköy Mahallesi" },
+              { "name": "Akatlar Mahallesi" }
             ]
           }
         ]
@@ -40,11 +41,11 @@ Proje klasöründe bu yapıda bir `data.json` dosyası olmalı:
 
 ### 🏙️ Şehirler
 ```http
-GET /cities/{harf}
+GET /sehir/{harf}
 ```
 **Örnek:** A harfi ile başlayan şehirler
 ```bash
-curl http://localhost:5000/cities/A
+curl http://localhost:5000/sehir/A
 # ["Ankara", "Adana", "Antalya"]
 ```
 
@@ -60,12 +61,12 @@ curl http://localhost:5000/semt/Istanbul/B
 
 ### 🏠 Mahalleler
 ```http
-GET /mahalle/{sehir}/{semt}/{harf}
+GET /mahalle/{sehir}/{ilce}/{harf}
 ```
 **Örnek:** İstanbul Beşiktaş'ta A harfi ile başlayan mahalleler
 ```bash
 curl http://localhost:5000/mahalle/Istanbul/Besiktas/A
-# ["Arnavutköy Mahallesi", "Akatlar Mahallesi"]
+# ["Arnavutköy", "Arnavutköy Mahallesi", "Akatlar Mahallesi"]
 ```
 
 ## ✨ Özellikler
@@ -78,14 +79,15 @@ curl http://localhost:5000/mahalle/Istanbul/Besiktas/A
 ## ⚠️ Hata Mesajları
 
 ```json
-{"error": "sehir not found"}   // Şehir bulunamadı
-{"error": "semt not found"}    // İlçe bulunamadı
+{"error": "sehir not found"}       // Şehir bulunamadı
+{"error": "Sehir bulunamadi"}      // Şehir bulunamadı
+{"error": "Ilce bulunamadi"}       // İlçe bulunamadı
 ```
 
 ## 📝 JavaScript Örneği
 
 ```javascript
-fetch('http://localhost:5000/cities/A')
+fetch('http://localhost:5000/sehir/A')
   .then(response => response.json())
   .then(data => console.log(data));
 ```
