@@ -19,48 +19,48 @@ function normalizeString(str) {
 const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 
 // Harfe göre il seçimi
-app.get('/cities/:letter', (req, res) => {
-    const letter = normalizeString(req.params.letter);
-    const cities = data.filter(city => normalizeString(city.name).startsWith(letter));
-    res.json(cities.map(city => city.name));
+app.get('/cities/:harf', (req, res) => {
+    const harf = normalizeString(req.params.harf);
+    const cities = data.filter(sehir => normalizeString(sehir.name).startsWith(harf));
+    res.json(cities.map(sehir => sehir.name));
 });
 
 // Harfe göre ilçe seçimi
-app.get('/districts/:city/:letter', (req, res) => {
-    const city = normalizeString(req.params.city);
-    const letter = normalizeString(req.params.letter)
-    const cityData = data.find(c => normalizeString(c.name) === city);
+app.get('/semt/:sehir/:harf', (req, res) => {
+    const sehir = normalizeString(req.params.sehir);
+    const harf = normalizeString(req.params.harf)
+    const sehirData = data.find(c => normalizeString(c.name) === sehir);
     
-    if (!cityData) {
-        return res.status(404).json({ error: 'City not found' });
+    if (!sehirData) {
+        return res.status(404).json({ error: 'sehir not found' });
     }
 
-    const districts = cityData.counties.filter(district => normalizeString(district.name).startsWith(letter));
-    res.json(districts.map(district => district.name));
+    const semt = sehirData.counties.filter(semt => normalizeString(semt.name).startsWith(harf));
+    res.json(semt.map(semt => semt.name));
 });
 
 
 // Harfe göre mahalle seçimi
-app.get('/neighborhoods/:city/:district/:letter', (req, res) => {
-    const city = normalizeString(req.params.city);
-    const district = normalizeString(req.params.district);
-    const letter = normalizeString(req.params.letter);
-    const cityData = data.find(c => normalizeString(c.name) === city);
+app.get('/mahalle/:sehir/:semt/:harf', (req, res) => {
+    const sehir = normalizeString(req.params.sehir);
+    const semt = normalizeString(req.params.semt);
+    const harf = normalizeString(req.params.harf);
+    const sehirData = data.find(c => normalizeString(c.name) === sehir);
     
-    if (!cityData) {
-        return res.status(404).json({ error: 'City not found' });
+    if (!sehirData) {
+        return res.status(404).json({ error: 'sehir not found' });
     }
 
-    const districtData = cityData.counties.find(d => normalizeString(d.name) === district);
+    const semtData = sehirData.counties.find(d => normalizeString(d.name) === semt);
 
-    if (!districtData) {
-        return res.status(404).json({ error: 'District not found' });
+    if (!semtData) {
+        return res.status(404).json({ error: 'semt not found' });
     }
 
-    const villages = districtData.districts.filter(neighborhood => normalizeString(neighborhood.name).startsWith(letter));
-    const neighborhoods = districtData.districts[0].neighborhoods.filter(neighborhood => normalizeString(neighborhood.name).startsWith(letter)); 
-    const allneighboor = villages.concat(neighborhoods);
-    res.json(allneighboor.map(neighborhood => neighborhood.name));
+    const köy = semtData.semt.filter(mahalle => normalizeString(mahalle.name).startsWith(harf));
+    const mahalle = semtData.semt[0].mahalle.filter(mahalle => normalizeString(mahalle.name).startsWith(harf)); 
+    const allneighboor = köy.concat(mahalle);
+    res.json(allneighboor.map(mahalle => mahalle.name));
 });
 
 app.listen(port, () => {
